@@ -11,7 +11,15 @@ class MethodChannelBytedancePangolin extends BytedancePangolinPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
+  }
+
+  @override
+  Future<String?> getTest() async {
+    final test = await methodChannel.invokeMethod<String>("getTest");
+    // return Future(() => "test");
+    return test;
   }
 }

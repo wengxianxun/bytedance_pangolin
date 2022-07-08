@@ -14,7 +14,7 @@ abstract class BytedancePangolinPlatform extends PlatformInterface {
   ///
   /// Defaults to [MethodChannelBytedancePangolin].
   static BytedancePangolinPlatform get instance => _instance;
-  
+
   /// Platform-specific implementations should set this with their own
   /// platform-specific class that extends [BytedancePangolinPlatform] when
   /// they register themselves.
@@ -25,5 +25,9 @@ abstract class BytedancePangolinPlatform extends PlatformInterface {
 
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
+  }
+
+  Future<String?> getTest() {
+    throw UnimplementedError("getTest() 函数不存在");
   }
 }

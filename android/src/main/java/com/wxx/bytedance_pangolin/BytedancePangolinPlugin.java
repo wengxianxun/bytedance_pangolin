@@ -26,6 +26,8 @@ public class BytedancePangolinPlugin implements FlutterPlugin, MethodCallHandler
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("getPlatformVersion")) {
       result.success("安卓系统版本 " + android.os.Build.VERSION.RELEASE);
+    }else if(call.method.equals("getTest")){
+      result.success("getTest函数测试");
     } else {
       result.notImplemented();
     }
