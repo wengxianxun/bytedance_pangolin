@@ -52,10 +52,26 @@ class _MyAppState extends State<MyApp> {
         _platformVersion = platformVersion;
       });
       // _loadSplashAd();
-      _loadBannerAd();
+      // _loadBannerAd();
+      _loadRewardAd();
       // _loadInterstitialAd();
     });
     if (!mounted) return;
+  }
+
+  _loadRewardAd() async {
+    await _bytedancePangolinPlugin.loadRewardAd(
+        isHorizontal: false,
+        debug: true,
+        mCodeId: "945344872",
+        supportDeepLink: true,
+        rewardName: "激励广告",
+        rewardAmount: 3,
+        isExpress: true,
+        expressViewAcceptedSizeH: 500,
+        expressViewAcceptedSizeW: 500,
+        userID: "user123",
+        mediaExtra: "media_extra");
   }
 
   // 开屏广告
@@ -65,10 +81,10 @@ class _MyAppState extends State<MyApp> {
 
   _loadBannerAd() async {
     await _bytedancePangolinPlugin.loadBannerAd(
-        mCodeId: "945202477",
+        mCodeId: "949248774",
         supportDeepLink: true,
-        expressViewWidth: 600,
-        expressViewHeight: 300,
+        expressViewWidth: 320,
+        expressViewHeight: 50,
         isCarousel: true,
         interval: 40,
         topMargin: 300);

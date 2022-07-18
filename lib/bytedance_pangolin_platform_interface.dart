@@ -71,6 +71,22 @@ abstract class BytedancePangolinPlatform extends PlatformInterface {
     throw UnimplementedError('loadFullScreenVideoAd() 还没实现.');
   }
 
+  Future loadRewardAd({
+    required String mCodeId,
+    required bool debug,
+    required bool supportDeepLink,
+    required String rewardName,
+    required int rewardAmount,
+    required bool isExpress,
+    double? expressViewAcceptedSizeH,
+    double? expressViewAcceptedSizeW,
+    required userID,
+    String? mediaExtra,
+    required bool isHorizontal,
+  }) async {
+    throw UnimplementedError('loadRewardAd() 还没实现.');
+  }
+
   Future removeBannerAd() async {
     throw UnimplementedError('removeBannerAd() 还没实现.');
   }

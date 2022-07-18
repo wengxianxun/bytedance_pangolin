@@ -107,6 +107,34 @@ class MethodChannelBytedancePangolin extends BytedancePangolinPlatform {
     });
   }
 
+  Future loadRewardAd({
+    required String mCodeId,
+    required bool debug,
+    required bool supportDeepLink,
+    required String rewardName,
+    required int rewardAmount,
+    required bool isExpress,
+    double? expressViewAcceptedSizeH,
+    double? expressViewAcceptedSizeW,
+    required userID,
+    String? mediaExtra,
+    required bool isHorizontal,
+  }) async {
+    return await methodChannel.invokeMethod("loadRewardAd", {
+      "mCodeId": mCodeId,
+      "debug": debug,
+      "supportDeepLink": supportDeepLink,
+      "rewardName": rewardName,
+      "rewardAmount": rewardAmount,
+      "isExpress": isExpress,
+      "expressViewAcceptedSizeH": expressViewAcceptedSizeH,
+      "expressViewAcceptedSizeW": expressViewAcceptedSizeW,
+      "userID": userID,
+      "mediaExtra": mediaExtra,
+      "isHorizontal": isHorizontal,
+    });
+  }
+
   Future removeBannerAd() async {
     await methodChannel.invokeMethod("removeBannerAd");
   }

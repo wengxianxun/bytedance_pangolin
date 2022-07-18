@@ -161,7 +161,73 @@ public class BytedancePangolinPlugin<onAttachedToActivity> implements FlutterPlu
         }
       }
     }
-    else if(call.method.equals("loadSplashAd")) {
+    else if (call.method.equals("loadRewardAd"))
+    {
+      Boolean isHorizontal = call.argument("isHorizontal");
+      String mCodeId = call.argument("mCodeId");
+      Boolean debug = call.argument("debug");
+      Boolean supportDeepLink = call.argument("supportDeepLink");
+      String rewardName = call.argument("rewardName");
+      int rewardAmount = (int) call.argument("rewardAmount");
+      Boolean isExpress = call.argument("isExpress");
+
+      double expressViewAcceptedSizeH;
+      if (call.argument("expressViewAcceptedSizeH") == null) {
+        expressViewAcceptedSizeH = 500;
+      } else {
+        expressViewAcceptedSizeH = call.argument("expressViewAcceptedSizeH");
+      }
+      double expressViewAcceptedSizeW;
+      if (call.argument("expressViewAcceptedSizeW") == null) {
+        expressViewAcceptedSizeW = 500;
+      } else {
+        expressViewAcceptedSizeW = call.argument("expressViewAcceptedSizeW");
+      }
+
+      String userID = call.argument("userID");
+      String mediaExtra;
+      if (call.argument("mediaExtra") == null) {
+        mediaExtra = "media_extra";
+      } else {
+        mediaExtra = call.argument("mediaExtra");
+      }
+
+      RewardVideo rewardVideo = new RewardVideo();
+      RewardVideo._channel = channel;
+      rewardVideo.activity = activity;
+      rewardVideo.context = applicationContext;
+      if (isHorizontal) {
+        rewardVideo.mHorizontalCodeId = mCodeId;
+      } else {
+        rewardVideo.mVerticalCodeId = mCodeId;
+      }
+
+      if (debug != null) {
+        rewardVideo.debug = debug;
+      } else {
+        rewardVideo.debug = false;
+      }
+
+      if (isExpress != null)
+      {
+        rewardVideo.mIsExpress = isExpress;
+      }
+      else
+      {
+        rewardVideo.mIsExpress = false;
+      }
+
+      rewardVideo.supportDeepLink = supportDeepLink;
+      rewardVideo.expressViewAcceptedSizeH = expressViewAcceptedSizeH;
+      rewardVideo.expressViewAcceptedSizeW = expressViewAcceptedSizeW;
+      rewardVideo.rewardName = rewardName;
+      rewardVideo.rewardAmount = rewardAmount;
+      rewardVideo.userID = userID;
+      rewardVideo.mediaExtra = mediaExtra;
+      rewardVideo.init();
+    }
+    else if(call.method.equals("loadSplashAd"))
+    {
       System.out.println("loadSplashAd:加载开屏广告");
       String mCodeId = call.argument("mCodeId");
       Boolean deBug = call.argument("debug");
