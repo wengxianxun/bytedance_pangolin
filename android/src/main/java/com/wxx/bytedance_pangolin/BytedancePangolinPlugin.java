@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -41,7 +42,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /** BytedancePangolinPlugin */
-public class BytedancePangolinPlugin implements FlutterPlugin, MethodCallHandler {
+public class BytedancePangolinPlugin<onAttachedToActivity> implements FlutterPlugin, MethodCallHandler,ActivityAware {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -58,12 +59,25 @@ public class BytedancePangolinPlugin implements FlutterPlugin, MethodCallHandler
   private TTFullScreenVideoAd mFSVAd;
   private long startTime = 0;
 
+//  public static void registerWith(FlutterEngine flutterEngine) {
+//    final BytedancePangolinPlugin instance = new BytedancePangolinPlugin();
+//    instance.onAttachedToEngine(flutterEngine.,registrar.messenger(),registrar.activity());
+//  }
+//public static void registerWith(Registrar registrar) {
+//  final PangolinPlugin instance = new PangolinPlugin();
+//  instance.onAttachedToEngine(registrar.context(),registrar.messenger(),registrar.activity());
+//}
+
+
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+    flutterPluginBinding.getPlatformViewRegistry();
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "bytedance_pangolin");
     channel.setMethodCallHandler(this);
     onAttachedToEngine(flutterPluginBinding.getApplicationContext(), flutterPluginBinding.getBinaryMessenger());
   }
+
+
 
   public static void registerWith(Registrar registrar) {
     final BytedancePangolinPlugin instance = new BytedancePangolinPlugin();
@@ -81,24 +95,24 @@ public class BytedancePangolinPlugin implements FlutterPlugin, MethodCallHandler
     this.activity = activity;
   }
 
-
+  @Override
   public void onAttachedToActivity(ActivityPluginBinding binding) {
     this.activity = binding.getActivity();
   }
 
 
 
-
+  @Override
   public void onDetachedFromActivityForConfigChanges() {
 
   }
 
-
+  @Override
   public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
 
   }
 
-
+  @Override
   public void onDetachedFromActivity() {
 
   }
@@ -107,9 +121,11 @@ public class BytedancePangolinPlugin implements FlutterPlugin, MethodCallHandler
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("getPlatformVersion")) {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
-    }else if (call.method.equals("register")) {
+    }
+    else if (call.method.equals("register"))
+    {
 
-      System.out.println("注册穿山甲sdk");
+      System.out.println("register:注册穿山甲sdk");
 
       String appId = call.argument("appId");
       Boolean useTextureView = call.argument("useTextureView");
@@ -119,38 +135,132 @@ public class BytedancePangolinPlugin implements FlutterPlugin, MethodCallHandler
       Boolean debug = call.argument("debug");
       Boolean supportMultiProcess = call.argument("supportMultiProcess");
       List<Integer> directDownloadNetworkType = call.argument("directDownloadNetworkType");
-      if(useTextureView == null)
-      {
+      if (useTextureView == null) {
         useTextureView = false;
       }
-      if (allowShowNotify == null)
-      {
+      if (allowShowNotify == null) {
         allowShowNotify = true;
       }
-      if (allowShowPageWhenScreenLock == null)
-      {
+      if (allowShowPageWhenScreenLock == null) {
         allowShowPageWhenScreenLock = true;
       }
-      if (debug == null)
-      {
+      if (debug == null) {
         debug = true;
       }
-      if (supportMultiProcess == null)
-      {
+      if (supportMultiProcess == null) {
         supportMultiProcess = false;
       }
-      if (appId == null || appId.trim().isEmpty())
-      {
-        result.error("500","appId can't be null",null);
-      }
-      else {
+      if (appId == null || appId.trim().isEmpty()) {
+        result.error("500", "appId can't be null", null);
+      } else {
         if (appName == null || appName.trim().isEmpty()) {
           result.error("600", "appName can't be null", null);
         } else {
-          TTAdManagerHolder.init(applicationContext, appId, useTextureView, appName, allowShowNotify, allowShowPageWhenScreenLock, debug, supportMultiProcess,directDownloadNetworkType);
+          TTAdManagerHolder.init(applicationContext, appId, useTextureView, appName, allowShowNotify, allowShowPageWhenScreenLock, debug, supportMultiProcess, directDownloadNetworkType);
           result.success(true);
         }
       }
+    }
+    else if(call.method.equals("loadSplashAd")) {
+      System.out.println("loadSplashAd:加载开屏广告");
+      String mCodeId = call.argument("mCodeId");
+      Boolean deBug = call.argument("debug");
+      Intent intent = new Intent();
+      intent.setClass(activity, SplashActivity.class);
+      intent.putExtra("mCodeId", mCodeId);
+      intent.putExtra("debug", deBug);
+      activity.startActivity(intent);
+      result.success(true);
+    }else if (call.method.equals("loadBannerAd")) {
+      Log.d("banner广告", "接入Android");
+      String mCodeId = call.argument("mCodeId");
+      Boolean supportDeepLink = call.argument("supportDeepLink");
+      Boolean isCarousel = call.argument("isCarousel");
+      int interval = 0;
+      float expressViewWidth = 0;
+      float expressViewHeight = 0;
+      int topMargin = 0;
+      if (call.argument("expressViewWidth") != null) {
+        double expressViewWidthDouble = call.argument("expressViewWidth");
+        expressViewWidth = (float) expressViewWidthDouble;
+      }
+
+      if (call.argument("expressViewHeight") != null) {
+        double expressViewHeightDouble = call.argument("expressViewHeight");
+        expressViewHeight = (float) expressViewHeightDouble;
+      }
+      if (call.argument("interval") != null && isCarousel) {
+        interval = call.argument("interval");
+      }
+      if (call.argument("topMargin") != null) {
+        topMargin = call.argument("topMargin");
+      }
+
+      Log.d("banner广告", mCodeId);
+      Log.d("banner广告", supportDeepLink.toString());
+      Log.d("banner广告", Float.toString(expressViewHeight));
+
+
+      mContext = this.applicationContext;
+
+      // 获取根视图
+      ViewGroup rootView = (ViewGroup) activity.findViewById(android.R.id.content);
+      View view = View.inflate(activity, R.layout.activity_native_express_banner, null);
+      mExpressContainer = (FrameLayout) view.findViewById(R.id.express_container);
+      if (mExpressContainer.getParent() != null) {
+        ((ViewGroup) mExpressContainer.getParent()).removeView(mExpressContainer);
+      }
+
+      // 设置banner 广告参数
+      RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mExpressContainer.getLayoutParams();
+      params.height = (int) expressViewHeight * 2;
+      params.width = (int) expressViewWidth * 2;
+      // 到顶部距离
+      params.topMargin = topMargin;
+      mExpressContainer.setLayoutParams(params);
+      rootView.addView(mExpressContainer);
+      initTTSDKConfig();
+      this.loadExpressBannerAd(mCodeId, Math.round(expressViewWidth), Math.round(expressViewHeight), interval);
+    }
+    else if (call.method.equals("removeBannerAd")) {
+      Log.d("bannerLog", "close");
+      FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mExpressContainer.getLayoutParams();
+      params.height = 0;
+      params.width = 0;
+      mExpressContainer.setLayoutParams(params);
+    }
+    else if (call.method.equals("loadInterstitialAd")) {
+      Log.d("loadInterstitialAd", "插屏广告展示...");
+      String mCodeId = call.argument("mCodeId");
+      double expressViewWidth = 0;
+      double expressViewHeight = 0;
+      if (call.argument("expressViewWidth") != null) {
+        expressViewWidth = call.argument("expressViewWidth");
+      }
+      if (call.argument("expressViewHeight") != null) {
+        expressViewHeight = call.argument("expressViewHeight");
+      }
+      initTTSDKConfig();
+      this.loadExpressInterstitialAd(mCodeId, (int) expressViewWidth, (int) expressViewHeight);
+    }
+    else if (call.method.equals("loadFullScreenVideoAd"))
+    {
+
+      Log.d("loadFullScreenVideoAd", "加载全屏视频广告");
+      String mCodeId = call.argument("mCodeId");
+      int orientation = call.argument("orientation");
+      double expressViewWidth = 0;
+      double expressViewHeight = 0;
+      if(call.argument("expressViewWidth") != null)
+      {
+        expressViewWidth = call.argument("expressViewWidth");
+      }
+      if (call.argument("expressViewHeight") != null)
+      {
+        expressViewHeight = call.argument("expressViewHeight");
+      }
+      initTTSDKConfig();
+      this.loadFullScreenVideoAd(mCodeId,(int) expressViewWidth,(int) expressViewHeight,orientation);
 
     } else {
       result.notImplemented();
@@ -160,5 +270,308 @@ public class BytedancePangolinPlugin implements FlutterPlugin, MethodCallHandler
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
+  }
+
+
+  private void initTTSDKConfig() {
+    //step2:创建TTAdNative对象，createAdNative(Context context) banner广告context需要传入Activity对象
+    mTTAdNative = TTAdManagerHolder.get().createAdNative(activity);
+    //step3:(可选，强烈建议在合适的时机调用):申请部分权限，如read_phone_state,防止获取不了imei时候，下载类广告没有填充的问题。
+    TTAdManagerHolder.get().requestPermissionIfNecessary(activity);
+  }
+
+  // banner广告 加载
+  private void loadExpressBannerAd(String codeId, int expressViewWidth, int expressViewHeight, final int interval) {
+    mExpressContainer.removeAllViews();
+    //step4:创建广告请求参数AdSlot,具体参数含义参考文档
+    AdSlot adSlot = new AdSlot.Builder()
+            .setCodeId(codeId) //广告位id
+            .setSupportDeepLink(true)
+            .setAdCount(1) //请求广告数量为1到3条
+            .setExpressViewAcceptedSize(expressViewWidth, expressViewHeight) //期望模板广告view的size,单位dp
+            .build();
+    //step5:请求广告，对请求回调的广告作渲染处理
+    mTTAdNative.loadBannerExpressAd(adSlot, new TTAdNative.NativeExpressAdListener() {
+      @Override
+      public void onError(int code, String message) {
+//        TToast.show(activity, "load error : " + code + ", " + message);
+        mExpressContainer.removeAllViews();
+      }
+
+      @Override
+      public void onNativeExpressAdLoad(List<TTNativeExpressAd> ads) {
+        if (ads == null || ads.size() == 0) {
+          return;
+        }
+        //获取哪一条广告
+        mTTAd = ads.get(0);
+        //设置轮播间隔 ms,不调用则不进行轮播展示
+        mTTAd.setSlideIntervalTime(interval * 1000);
+        bindBannerAdListener(mTTAd);
+        startTime = System.currentTimeMillis();
+        // 渲染广告
+        mTTAd.render();
+      }
+    });
+  }
+
+  // banner广告 监听
+  private void bindBannerAdListener(TTNativeExpressAd ad) {
+    ad.setExpressInteractionListener(new TTNativeExpressAd.ExpressAdInteractionListener() {
+      @Override
+      public void onAdClicked(View view, int type) {
+//        TToast.show(mContext, "广告被点击");
+      }
+
+      @Override
+      public void onAdShow(View view, int type) {
+//        TToast.show(mContext, "广告展示");
+      }
+
+      @Override
+      public void onRenderFail(View view, String msg, int code) {
+        Log.e("ExpressView", "render fail:" + (System.currentTimeMillis() - startTime));
+//        TToast.show(mContext, msg + " code:" + code);
+      }
+
+      @Override
+      public void onRenderSuccess(View view, float width, float height) {
+        Log.e("ExpressView", "render suc:" + (System.currentTimeMillis() - startTime));
+        //返回view的宽高 单位 dp
+//        TToast.show(mContext, "渲染成功");
+        mExpressContainer.removeAllViews();
+        mExpressContainer.addView(view);
+      }
+    });
+    //dislike设置
+//    bindDislike(ad, false);
+    if (ad.getInteractionType() != TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+      return;
+    }
+    ad.setDownloadListener(new TTAppDownloadListener() {
+      @Override
+      public void onIdle() {
+      }
+
+      @Override
+      public void onDownloadActive(long totalBytes, long currBytes, String fileName, String appName) {
+//        if (!mHasShowDownloadActive) {
+//          mHasShowDownloadActive = true;
+////          TToast.show(BannerExpressActivity.this, "下载中，点击暂停", Toast.LENGTH_LONG);
+//        }
+      }
+
+      @Override
+      public void onDownloadPaused(long totalBytes, long currBytes, String fileName, String appName) {
+//        TToast.show(BannerExpressActivity.this, "下载暂停，点击继续", Toast.LENGTH_LONG);
+      }
+
+      @Override
+      public void onDownloadFailed(long totalBytes, long currBytes, String fileName, String appName) {
+//        TToast.show(BannerExpressActivity.this, "下载失败，点击重新下载", Toast.LENGTH_LONG);
+      }
+
+      @Override
+      public void onInstalled(String fileName, String appName) {
+//        TToast.show(BannerExpressActivity.this, "安装完成，点击图片打开", Toast.LENGTH_LONG);
+      }
+
+      @Override
+      public void onDownloadFinished(long totalBytes, String fileName, String appName) {
+//        TToast.show(BannerExpressActivity.this, "点击安装", Toast.LENGTH_LONG);
+      }
+    });
+  }
+
+  //插屏广告 加载
+  private void loadExpressInterstitialAd(String codeId, int expressViewWidth, int expressViewHeight) {
+    //step4:创建广告请求参数AdSlot,具体参数含义参考文档
+    AdSlot adSlot = new AdSlot.Builder()
+            .setCodeId(codeId) //广告位id
+            .setSupportDeepLink(true)
+            .setAdCount(1) //请求广告数量为1到3条
+            .setExpressViewAcceptedSize(expressViewWidth, expressViewHeight) //期望模板广告view的size,单位dp
+            .build();
+    //step5:请求广告，对请求回调的广告作渲染处理
+    mTTAdNative.loadInteractionExpressAd(adSlot, new TTAdNative.NativeExpressAdListener() {
+      @Override
+      public void onError(int code, String message) {
+        Log.e("插屏广告:", "load error : " + code + ", " + message);
+        TToast.show(activity, "load error : " + code + ", " + message);
+      }
+
+      @Override
+      public void onNativeExpressAdLoad(List<TTNativeExpressAd> ads) {
+        if (ads == null || ads.size() == 0) {
+          Log.e("插屏广告:", "广告为空");
+          return;
+        }
+        Log.e("插屏广告:", "展示正常");
+        mTTAd = ads.get(0);
+        bindInterstitialAdListener(mTTAd);
+        startTime = System.currentTimeMillis();
+        mTTAd.render();
+      }
+    });
+  }
+
+  //插屏广告 监听
+  private void bindInterstitialAdListener(TTNativeExpressAd ad) {
+    ad.setExpressInteractionListener(new TTNativeExpressAd.AdInteractionListener() {
+      @Override
+      public void onAdDismiss() {
+        TToast.show(mContext, "广告关闭");
+      }
+
+      @Override
+      public void onAdClicked(View view, int type) {
+        TToast.show(mContext, "广告被点击");
+      }
+
+      @Override
+      public void onAdShow(View view, int type) {
+        Log.d("插屏广告","show");
+        TToast.show(mContext, "广告展示");
+      }
+
+      @Override
+      public void onRenderFail(View view, String msg, int code) {
+        Log.e("ExpressView", "render fail:" + (System.currentTimeMillis() - startTime));
+        TToast.show(mContext, msg + " code:" + code);
+      }
+
+      @Override
+      public void onRenderSuccess(View view, float width, float height) {
+        Log.e("ExpressView", "render suc:" + (System.currentTimeMillis() - startTime));
+        //返回view的宽高 单位 dp
+        TToast.show(mContext, "渲染成功");
+        mTTAd.showInteractionExpressAd(activity);
+
+      }
+    });
+    if (ad.getInteractionType() != TTAdConstant.INTERACTION_TYPE_DOWNLOAD) {
+      return;
+    }
+    ad.setDownloadListener(new TTAppDownloadListener() {
+      @Override
+      public void onIdle() {
+//        TToast.show(InteractionExpressActivity.this, "点击开始下载", Toast.LENGTH_LONG);
+      }
+
+      @Override
+      public void onDownloadActive(long totalBytes, long currBytes, String fileName, String appName) {
+//        if (!mHasShowDownloadActive) {
+//          mHasShowDownloadActive = true;
+//          TToast.show(InteractionExpressActivity.this, "下载中，点击暂停", Toast.LENGTH_LONG);
+//        }
+      }
+
+      @Override
+      public void onDownloadPaused(long totalBytes, long currBytes, String fileName, String appName) {
+//        TToast.show(InteractionExpressActivity.this, "下载暂停，点击继续", Toast.LENGTH_LONG);
+      }
+
+      @Override
+      public void onDownloadFailed(long totalBytes, long currBytes, String fileName, String appName) {
+//        TToast.show(InteractionExpressActivity.this, "下载失败，点击重新下载", Toast.LENGTH_LONG);
+      }
+
+      @Override
+      public void onInstalled(String fileName, String appName) {
+//        TToast.show(InteractionExpressActivity.this, "安装完成，点击图片打开", Toast.LENGTH_LONG);
+      }
+
+      @Override
+      public void onDownloadFinished(long totalBytes, String fileName, String appName) {
+//        TToast.show(InteractionExpressActivity.this, "点击安装", Toast.LENGTH_LONG);
+      }
+    });
+  }
+
+  //新插屏广告 加载
+  private void loadFullScreenVideoAd(String codeId, int expressViewWidth, int expressViewHeight, int orientation) {
+    //step4:创建广告请求参数AdSlot,具体参数含义参考文档
+    AdSlot adSlot = new AdSlot.Builder()
+            .setCodeId(codeId) //广告位id
+            .setSupportDeepLink(true)
+            .setOrientation(orientation) //期望视频的播放方向
+            .setExpressViewAcceptedSize(expressViewWidth, expressViewHeight) //期望模板广告view的size,单位dp
+            .build();
+    //step5:请求广告，对请求回调的广告作渲染处理
+    mTTAdNative.loadFullScreenVideoAd(adSlot, new TTAdNative.FullScreenVideoAdListener() {
+      @Override
+      public void onError(int code, String message) {
+      }
+
+      @Override
+      public void onFullScreenVideoAdLoad(TTFullScreenVideoAd ad) {
+        if (ad == null) {
+          return;
+        }
+        mFSVAd = ad;
+        bindFullScreenVideoAdListener(mFSVAd);
+      }
+
+      @Override
+      public void onFullScreenVideoCached() {
+      }
+
+      @Override
+      public void onFullScreenVideoCached(TTFullScreenVideoAd ad) {
+        ad.showFullScreenVideoAd(activity, TTAdConstant.RitScenes.GAME_GIFT_BONUS, null);
+        mFSVAd = null;
+      }
+    });
+  }
+
+  //新插屏广告 监听
+  private void bindFullScreenVideoAdListener(TTFullScreenVideoAd ad) {
+    ad.setFullScreenVideoAdInteractionListener(new TTFullScreenVideoAd.FullScreenVideoAdInteractionListener() {
+      @Override
+      public void onAdClose() {
+        mFSVAd = null;
+      }
+
+      @Override
+      public void onAdVideoBarClick() {
+      }
+
+      @Override
+      public void onAdShow() {
+      }
+
+      @Override
+      public void onVideoComplete() {
+      }
+
+      @Override
+      public void onSkippedVideo() {
+      }
+    });
+    ad.setDownloadListener(new TTAppDownloadListener() {
+      @Override
+      public void onIdle() {
+      }
+
+      @Override
+      public void onDownloadActive(long totalBytes, long currBytes, String fileName, String appName) {
+      }
+
+      @Override
+      public void onDownloadPaused(long totalBytes, long currBytes, String fileName, String appName) {
+      }
+
+      @Override
+      public void onDownloadFailed(long totalBytes, long currBytes, String fileName, String appName) {
+      }
+
+      @Override
+      public void onInstalled(String fileName, String appName) {
+      }
+
+      @Override
+      public void onDownloadFinished(long totalBytes, String fileName, String appName) {
+      }
+    });
   }
 }

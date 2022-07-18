@@ -1,4 +1,4 @@
-
+import 'bytedance_pangolin_method_channel.dart';
 import 'bytedance_pangolin_platform_interface.dart';
 
 class BytedancePangolin {
@@ -6,6 +6,7 @@ class BytedancePangolin {
     return BytedancePangolinPlatform.instance.getPlatformVersion();
   }
 
+  // 注册sdk
   Future<bool?> register({
     required String appId,
     required bool useTextureView,
@@ -15,9 +16,67 @@ class BytedancePangolin {
     required bool debug,
     required bool supportMultiProcess,
     List<int>? directDownloadNetworkType,
-  }){
-    return BytedancePangolinPlatform.instance.register(appId: appId,useTextureView: useTextureView,appName: appName,allowShowNotify: allowShowNotify,
-    allowShowPageWhenScreenLock: allowShowPageWhenScreenLock,debug: debug,supportMultiProcess: supportMultiProcess,
-    directDownloadNetworkType: directDownloadNetworkType);
+  }) {
+    return BytedancePangolinPlatform.instance.register(
+        appId: appId,
+        useTextureView: useTextureView,
+        appName: appName,
+        allowShowNotify: allowShowNotify,
+        allowShowPageWhenScreenLock: allowShowPageWhenScreenLock,
+        debug: debug,
+        supportMultiProcess: supportMultiProcess,
+        directDownloadNetworkType: directDownloadNetworkType);
+  }
+
+  // 开屏广告
+  Future<bool> loadSplashAd(
+      {required String mCodeId, required bool debug}) async {
+    return BytedancePangolinPlatform.instance
+        .loadSplashAd(mCodeId: mCodeId, debug: debug);
+  }
+
+  // banner广告
+  Future loadBannerAd(
+      {required String mCodeId,
+      required bool supportDeepLink,
+      double? expressViewWidth,
+      double? expressViewHeight,
+      bool? isCarousel,
+      int? interval,
+      int? topMargin}) async {
+    return BytedancePangolinPlatform.instance.loadBannerAd(
+        mCodeId: mCodeId,
+        supportDeepLink: supportDeepLink,
+        expressViewWidth: expressViewWidth,
+        expressViewHeight: expressViewHeight,
+        isCarousel: isCarousel,
+        interval: interval,
+        topMargin: topMargin);
+  }
+
+  Future loadInterstitialAd(
+      {required String mCodeId,
+      double? expressViewWidth,
+      double? expressViewHeight}) async {
+    return BytedancePangolinPlatform.instance.loadInterstitialAd(
+        mCodeId: mCodeId,
+        expressViewWidth: expressViewWidth,
+        expressViewHeight: expressViewHeight);
+  }
+
+  Future loadFullScreenVideoAd(
+      {required String mCodeId,
+      double? expressViewWidth,
+      double? expressViewHeight,
+      int orientation = ORIENTATION_VERTICAL}) async {
+    return BytedancePangolinPlatform.instance.loadFullScreenVideoAd(
+        mCodeId: mCodeId,
+        expressViewWidth: expressViewWidth,
+        expressViewHeight: expressViewHeight,
+        orientation: orientation);
+  }
+
+  Future removeBannerAd() async {
+    return BytedancePangolinPlatform.instance.removeBannerAd();
   }
 }

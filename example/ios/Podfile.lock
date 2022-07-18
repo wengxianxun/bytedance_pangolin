@@ -1,0 +1,46 @@
+PODS:
+  - Ads-CN (4.6.0.7):
+    - Ads-CN/BUAdSDK (= 4.6.0.7)
+  - Ads-CN/BUAdSDK (4.6.0.7):
+    - Ads-CN/Domestic
+  - Ads-CN/BUFoundation (4.6.0.7):
+    - BURelyFoundation (= 0.0.1.58)
+  - Ads-CN/CSJAdSDK (4.6.0.7):
+    - Ads-CN/BUFoundation
+  - Ads-CN/Domestic (4.6.0.7):
+    - Ads-CN/BUFoundation
+    - Ads-CN/CSJAdSDK
+  - BURelyFoundation (0.0.1.58):
+    - BURelyFoundation/HM (= 0.0.1.58)
+    - BURelyFoundation/NETWork (= 0.0.1.58)
+  - BURelyFoundation/HM (0.0.1.58)
+  - BURelyFoundation/NETWork (0.0.1.58)
+  - bytedance_pangolin (0.0.1):
+    - Ads-CN
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - bytedance_pangolin (from `.symlinks/plugins/bytedance_pangolin/ios`)
+  - Flutter (from `Flutter`)
+
+SPEC REPOS:
+  trunk:
+    - Ads-CN
+    - BURelyFoundation
+
+EXTERNAL SOURCES:
+  bytedance_pangolin:
+    :path: ".symlinks/plugins/bytedance_pangolin/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  Ads-CN: f141a1c2f156e2f8c57f76bd8f89f1242660c9b9
+  BURelyFoundation: f529322f9e93cf8cc0b4539e447aff77a8ff34de
+  bytedance_pangolin: 0c82bd46a8b617a34d5ecfdd87290fad7040153f
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+
+PODFILE CHECKSUM: b1f7a399522c118a74b177b13c01eca692aa7e6d
+
+COCOAPODS: 1.11.3

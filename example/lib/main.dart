@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:bytedance_pangolin/bytedance_pangolin.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,31 +31,56 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await _bytedancePangolinPlugin.getPlatformVersion() ?? 'Unknown platform version';
+      platformVersion = await _bytedancePangolinPlugin.getPlatformVersion() ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
 
-     await _bytedancePangolinPlugin.register(appId: "5056758",
-        useTextureView: true,
-        appName: "爱看",
-        allowShowNotify: true,
-        allowShowPageWhenScreenLock: true,
-        debug: true,
-        supportMultiProcess: true).then((value) {
+    await _bytedancePangolinPlugin
+        .register(
+            appId: "5073083",
+            useTextureView: true,
+            appName: "tgame",
+            allowShowNotify: true,
+            allowShowPageWhenScreenLock: true,
+            debug: true,
+            supportMultiProcess: true)
+        .then((value) {
       platformVersion = '已注册sdk';
       setState(() {
         _platformVersion = platformVersion;
       });
+      // _loadSplashAd();
+      _loadBannerAd();
+      // _loadInterstitialAd();
     });
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
+  }
 
+  // 开屏广告
+  _loadSplashAd() async {
+    _bytedancePangolinPlugin.loadSplashAd(mCodeId: "887343401", debug: false);
+  }
 
+  _loadBannerAd() async {
+    await _bytedancePangolinPlugin.loadBannerAd(
+        mCodeId: "945202477",
+        supportDeepLink: true,
+        expressViewWidth: 600,
+        expressViewHeight: 300,
+        isCarousel: true,
+        interval: 40,
+        topMargin: 300);
+  }
+
+  _removeBannerAd() async {
+    _bytedancePangolinPlugin.removeBannerAd();
+  }
+
+  _loadInterstitialAd() async {
+    await _bytedancePangolinPlugin.loadInterstitialAd(
+        mCodeId: "945344417", expressViewWidth: 600, expressViewHeight: 600);
   }
 
   @override
