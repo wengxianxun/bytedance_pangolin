@@ -1,7 +1,17 @@
+import 'dart:async';
+
+import 'package:bytedance_pangolin/bytedance_pangolin_response.dart';
+
 import 'bytedance_pangolin_method_channel.dart';
 import 'bytedance_pangolin_platform_interface.dart';
 
+export 'bytedance_pangolin_response.dart';
+
 class BytedancePangolin {
+  Stream<BasePangolinResponse> pangolinResponseEventHandlers() {
+    return pangolinResponseEventHandler;
+  }
+
   // 注册sdk
   Future<bool?> register({
     required String appId,

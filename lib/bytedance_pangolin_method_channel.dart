@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'bytedance_pangolin_platform_interface.dart';
+import 'bytedance_pangolin_response.dart';
 
 const int NETWORK_STATE_MOBILE = 1;
 const int NETWORK_STATE_2G = 2;
@@ -11,12 +14,23 @@ const int NETWORK_STATE_4G = 5;
 
 const int ORIENTATION_VERTICAL = 1;
 const int ORIENTATION_HORIZONTAL = 2;
+StreamController<BasePangolinResponse> _pangolinResponseEventHandlerController =
+    StreamController.broadcast();
+
+Stream<BasePangolinResponse> get pangolinResponseEventHandler =>
+    _pangolinResponseEventHandlerController.stream;
 
 /// An implementation of [BytedancePangolinPlatform] that uses method channels.
 class MethodChannelBytedancePangolin extends BytedancePangolinPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('bytedance_pangolin');
+  final methodChannel = const MethodChannel('bytedance_pangolin')
+    ..setMethodCallHandler((methodCall) async {
+      var response =
+          BasePangolinResponse.create(methodCall.method, methodCall.arguments);
+      _pangolinResponseEventHandlerController.add(response);
+      return Future.value();
+    });
 
   @override
   Future<bool?> register({

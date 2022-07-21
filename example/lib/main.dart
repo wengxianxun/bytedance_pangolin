@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bytedance_pangolin/bytedance_pangolin.dart';
+import 'package:bytedance_pangolin/bytedance_pangolin.dart' as Pangolin;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,12 +16,26 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  final _bytedancePangolinPlugin = BytedancePangolin();
+  final _bytedancePangolinPlugin = Pangolin.BytedancePangolin();
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+
+    _bytedancePangolinPlugin.pangolinResponseEventHandlers().listen((value) {
+      if (value is Pangolin.RewardResponse) {
+        print("激励视频回调：${value.rewardVerify}");
+        print("激励视频回调：${value.rewardName}");
+        print("激励视频回调：${value.rewardAmount}");
+
+        if (value.rewardName == "rewardVideo Close") {
+          debugPrint("视频关闭了");
+        }
+      } else {
+        print("回调类型不符合");
+      }
+    });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -42,10 +56,6 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         _platformVersion = platformVersion;
       });
-      // _loadSplashAd();
-      // _loadBannerAd();
-      // _loadRewardAd();
-      // _loadInterstitialAd();
     });
     if (!mounted) return;
   }

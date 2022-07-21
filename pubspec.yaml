@@ -1,7 +1,7 @@
 name: bytedance_pangolin
-description: 穿山甲广告sdk
+description: 字节跳动-穿山甲广告sdk（支持iOS和Android）
 version: 0.0.1
-homepage:
+homepage: https://github.com/wengxianxun/bytedance_pangolin
 
 environment:
   sdk: ">=2.17.5 <3.0.0"
