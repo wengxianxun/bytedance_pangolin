@@ -119,10 +119,7 @@ public class BytedancePangolinPlugin<onAttachedToActivity> implements FlutterPlu
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
-    }
-    else if (call.method.equals("register"))
+    if (call.method.equals("register"))
     {
 
       System.out.println("register:注册穿山甲sdk");
@@ -360,7 +357,7 @@ public class BytedancePangolinPlugin<onAttachedToActivity> implements FlutterPlu
     mTTAdNative.loadBannerExpressAd(adSlot, new TTAdNative.NativeExpressAdListener() {
       @Override
       public void onError(int code, String message) {
-//        TToast.show(activity, "load error : " + code + ", " + message);
+        TToast.show(activity, "load error : " + code + ", " + message);
         mExpressContainer.removeAllViews();
       }
 

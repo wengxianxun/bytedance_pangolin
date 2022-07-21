@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bytedance_pangolin/bytedance_pangolin.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,14 +27,6 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion = await _bytedancePangolinPlugin.getPlatformVersion() ??
-          'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
 
     await _bytedancePangolinPlugin
         .register(
@@ -53,7 +44,7 @@ class _MyAppState extends State<MyApp> {
       });
       // _loadSplashAd();
       // _loadBannerAd();
-      _loadRewardAd();
+      // _loadRewardAd();
       // _loadInterstitialAd();
     });
     if (!mounted) return;
@@ -65,8 +56,8 @@ class _MyAppState extends State<MyApp> {
         debug: true,
         mCodeId: "945344872",
         supportDeepLink: true,
-        rewardName: "激励广告",
-        rewardAmount: 3,
+        rewardName: "金币",
+        rewardAmount: 2,
         isExpress: true,
         expressViewAcceptedSizeH: 500,
         expressViewAcceptedSizeW: 500,
@@ -87,7 +78,7 @@ class _MyAppState extends State<MyApp> {
         expressViewHeight: 50,
         isCarousel: true,
         interval: 40,
-        topMargin: 300);
+        topMargin: 50);
   }
 
   _removeBannerAd() async {
@@ -99,6 +90,18 @@ class _MyAppState extends State<MyApp> {
         mCodeId: "945344417", expressViewWidth: 600, expressViewHeight: 600);
   }
 
+  // InkWell(
+  // onTap: () {
+  // _loadRewardAd();
+  // },
+  // child: Container(
+  // color: Colors.red,
+  // width: 200,
+  // height: 100,
+  // child: Text("按钮"),
+  // ),
+  // )
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -107,7 +110,51 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: ListView(
+            children: [
+              const SizedBox(
+                height: 50,
+              ),
+              ListTile(
+                title: const Text("banner广告"),
+                onTap: () {
+                  _loadBannerAd();
+                },
+              ),
+              const Divider(height: 1.0),
+              ListTile(
+                title: const Text(
+                  "删除banner",
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () {
+                  _removeBannerAd();
+                },
+              ),
+              const Divider(height: 1.0),
+              ListTile(
+                title: const Text("插屏广告"),
+                onTap: () {
+                  _loadInterstitialAd();
+                },
+              ),
+              const Divider(height: 1.0),
+              ListTile(
+                title: const Text("激励广告"),
+                onTap: () {
+                  _loadRewardAd();
+                },
+              ),
+              const Divider(height: 1.0),
+              ListTile(
+                title: const Text("开屏广告"),
+                onTap: () {
+                  _loadSplashAd();
+                },
+              ),
+              const Divider(height: 1.0),
+            ],
+          ),
         ),
       ),
     );

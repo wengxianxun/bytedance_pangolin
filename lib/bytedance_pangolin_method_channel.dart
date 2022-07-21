@@ -19,13 +19,6 @@ class MethodChannelBytedancePangolin extends BytedancePangolinPlatform {
   final methodChannel = const MethodChannel('bytedance_pangolin');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version =
-        await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
-  }
-
-  @override
   Future<bool?> register({
     required String appId,
     required bool useTextureView,

@@ -2,6 +2,7 @@ package com.wxx.bytedance_pangolin;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -132,6 +133,22 @@ public class RewardVideo extends FlutterActivity {
                 }
                 mttRewardVideoAd = ad;
                 mttRewardVideoAd.setRewardAdInteractionListener(new TTRewardVideoAd.RewardAdInteractionListener() {
+
+
+                    /**
+                     * 激励视频播放完毕，验证是否有效发放奖励的回调 4400版本新增
+                     *
+                     * @param isRewardValid 奖励有效
+                     * @param rewardType 奖励类型，0:基础奖励 >0:进阶奖励
+                     * @param extraInfo 奖励的额外参数
+                     */
+                    @Override
+                    public void onRewardArrived(boolean isRewardValid, int rewardType, Bundle extraInfo){
+                        if (debug)
+                        {
+                            TToast.show(context, "onRewardArrived");
+                        }
+                    }
 
                     @Override
                     public void onAdShow() {

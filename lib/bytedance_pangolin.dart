@@ -2,10 +2,6 @@ import 'bytedance_pangolin_method_channel.dart';
 import 'bytedance_pangolin_platform_interface.dart';
 
 class BytedancePangolin {
-  Future<String?> getPlatformVersion() {
-    return BytedancePangolinPlatform.instance.getPlatformVersion();
-  }
-
   // 注册sdk
   Future<bool?> register({
     required String appId,

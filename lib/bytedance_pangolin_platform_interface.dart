@@ -23,10 +23,6 @@ abstract class BytedancePangolinPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
   Future<bool?> register({
     required String appId,
     required bool useTextureView,
